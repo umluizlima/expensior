@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="entryForm">
     <form @submit="onSubmit">
 
       <b-field label="Amount">
@@ -10,7 +10,8 @@
         <b-datepicker
           v-model="form.date"
           placeholder="Click to select..."
-          icon="calendar-today">
+          icon="calendar-today"
+          required>
         </b-datepicker>
       </b-field>
 
@@ -45,7 +46,7 @@
         </b-taginput>
         </b-field>
 
-      <input class="button is-success is-fullwidth" type="submit" value="Submit input">
+      <input class="button is-success is-fullwidth" type="submit" value="Submit">
 
     </form>
   </div>
@@ -58,14 +59,14 @@ export default {
       form: {
         amount: null,
         description: null,
-        date: null,
+        date: new Date(),
         source: null,
         destination: null,
         tags: [],
       },
       /* Get sources from API */
       availableSources: [
-        'nuconta',
+        'bank account',
         'credit card',
         'wallet',
         'outside',
@@ -79,6 +80,8 @@ export default {
         'long term',
         'short term',
         'shelter',
+        'freelance',
+        'employment',
       ],
     };
   },
@@ -93,7 +96,7 @@ export default {
       /* Reset our form values */
       this.form.amount = null;
       this.form.description = null;
-      this.form.date = null;
+      this.form.date = new Date();
       this.form.source = null;
       this.form.destination = null;
       this.form.tags = [];
@@ -106,3 +109,18 @@ export default {
   },
 };
 </script>
+
+<style>
+  #entryForm {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    text-align: left;
+  }
+  form {
+    width: 100%;
+  }
+</style>
