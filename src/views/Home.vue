@@ -7,7 +7,7 @@
       New pile
     </button>
 
-    <b-modal :active.sync="isPileModalActive" canCancel="false" has-modal-card>
+    <b-modal :active.sync="isPileModalActive" :canCancel="false" has-modal-card>
       <PileForm/>
     </b-modal>
 
@@ -16,7 +16,7 @@
       New entry
     </button>
 
-    <b-modal :active.sync="isEntryModalActive" canCancel="false" has-modal-card>
+    <b-modal :active.sync="isEntryModalActive" :canCancel="false" has-modal-card>
       <EntryForm/>
     </b-modal>
   </div>
@@ -37,9 +37,17 @@ export default {
   },
   data() {
     return {
-      isEntryModalActive: true,
+      isEntryModalActive: this.show(),
       isPileModalActive: false,
     };
+  },
+  methods: {
+    show() {
+      this.isEntryModalActive = false;
+      this.$nextTick(() => {
+        this.isEntryModalActive = true;
+      });
+    },
   },
 };
 </script>
