@@ -50,9 +50,12 @@
 </template>
 
 <script>
+import { API } from '@/api';
+
 export default {
   data() {
     return {
+      api: new API('/entries'),
       form: {
         amount: null,
         description: null,
@@ -61,12 +64,7 @@ export default {
         tags: [],
       },
       /* Get piles from API */
-      availablePiles: [
-        'bank account',
-        'credit card',
-        'wallet',
-        'outside',
-      ],
+      availablePiles: [],
       /* Get tags from API */
       availableTags: [
         'groceries',
@@ -81,26 +79,31 @@ export default {
       ],
     };
   },
+  created: function () {
+    var api = new API('/piles');
+    this.piles = [];
+    api.get()
+      .then((resp) => {
+        for (let pile of resp.data) {
+          this.availablePiles.push(pile.name);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },
   methods: {
     onSubmit(evt) {
       evt.preventDefault();
       /* Handle the submit event */
-      alert(JSON.stringify(this.form));
-      this.$parent.close();
-      // this.onReset();
-    },
-    onReset() {
-      /* Reset our form values */
-      this.form.amount = null;
-      this.form.description = null;
-      this.form.date = new Date();
-      this.form.pile = null;
-      this.form.tags = [];
-      /* Trick to reset/clear native browser form validation state */
-      this.show = false;
-      this.$nextTick(() => {
-        this.show = true;
-      });
+      console.log(this.form);
+      this.api.create(this.form)
+        .then(() => {
+          this.$parent.close();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };

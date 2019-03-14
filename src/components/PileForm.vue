@@ -18,9 +18,12 @@
 </template>
 
 <script>
+import { API } from '@/api';
+
 export default {
   data() {
     return {
+      api: new API('/piles'),
       form: {
         name: null,
       },
@@ -30,18 +33,14 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
       /* Handle the submit event */
-      alert(JSON.stringify(this.form));
-      this.$parent.close();
-      // this.onReset();
-    },
-    onReset() {
-      /* Reset our form values */
-      this.form.name = null;
-      /* Trick to reset/clear native browser form validation state */
-      this.show = false;
-      this.$nextTick(() => {
-        this.show = true;
-      });
+      console.log(this.form);
+      this.api.create(this.form)
+        .then(() => {
+          this.$parent.close();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };
