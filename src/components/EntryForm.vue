@@ -1,55 +1,52 @@
 <template>
-  <div id="entryForm">
-    <form @submit="onSubmit">
+  <form id="entryForm" @submit="onSubmit">
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Create Entry</p>
+      </header>
+      <section class="modal-card-body">
+          <b-field label="Amount">
+            <b-input v-model="form.amount" type="number" step="0.001" required />
+          </b-field>
 
-      <b-field label="Amount">
-        <b-input v-model="form.amount" type="number" step="0.001" required />
-      </b-field>
+          <b-field label="Date">
+            <b-datepicker
+              v-model="form.date"
+              placeholder="Click to select..."
+              icon="calendar-today"
+              required>
+            </b-datepicker>
+          </b-field>
 
-      <b-field label="Date">
-        <b-datepicker
-          v-model="form.date"
-          placeholder="Click to select..."
-          icon="calendar-today"
-          required>
-        </b-datepicker>
-      </b-field>
+          <b-field label="Description">
+            <b-input v-model="form.description" />
+          </b-field>
 
-      <b-field label="Description">
-        <b-input v-model="form.description" />
-      </b-field>
+          <b-field label="Pile">
+            <b-select v-model="form.pile" placeholder="Add entry to pile..." expanded required>
+              <option v-for="(pile, index) in availablePiles" :key="index">
+                  {{ pile }}
+              </option>
+            </b-select>
+          </b-field>
 
-      <b-field label="Source">
-        <b-select v-model="form.source" placeholder="Select a source" expanded required>
-          <option v-for="(source, index) in availableSources" :key="index">
-              {{ source }}
-          </option>
-        </b-select>
-      </b-field>
-
-      <b-field label="Destination">
-        <b-select v-model="form.destination" placeholder="Select a destination" expanded required>
-          <option v-for="(destination, index) in availableSources" :key="index">
-              {{ destination }}
-          </option>
-        </b-select>
-      </b-field>
-
-      <b-field label="Tags">
-        <b-taginput
-          v-model="form.tags"
-          :data="availableTags"
-          autocomplete
-          :allow-new="true"
-          icon="label"
-          placeholder="Add a tag">
-        </b-taginput>
-        </b-field>
-
-      <input class="button is-success is-fullwidth" type="submit" value="Submit">
-
-    </form>
-  </div>
+          <b-field label="Tags">
+            <b-taginput
+              v-model="form.tags"
+              :data="availableTags"
+              autocomplete
+              :allow-new="true"
+              icon="label"
+              placeholder="Add a tag">
+            </b-taginput>
+            </b-field>
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button is-success is-fullwidth" type="submit">Submit</button>
+        <button class="button is-danger" type="button" @click="$parent.close()">Cancel</button>
+      </footer>
+    </div>
+  </form>
 </template>
 
 <script>
@@ -60,12 +57,11 @@ export default {
         amount: null,
         description: null,
         date: new Date(),
-        source: null,
-        destination: null,
+        pile: null,
         tags: [],
       },
-      /* Get sources from API */
-      availableSources: [
+      /* Get piles from API */
+      availablePiles: [
         'bank account',
         'credit card',
         'wallet',
@@ -90,15 +86,15 @@ export default {
       evt.preventDefault();
       /* Handle the submit event */
       alert(JSON.stringify(this.form));
-      this.onReset();
+      this.$parent.close();
+      // this.onReset();
     },
     onReset() {
       /* Reset our form values */
       this.form.amount = null;
       this.form.description = null;
       this.form.date = new Date();
-      this.form.source = null;
-      this.form.destination = null;
+      this.form.pile = null;
       this.form.tags = [];
       /* Trick to reset/clear native browser form validation state */
       this.show = false;
