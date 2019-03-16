@@ -1,6 +1,6 @@
 {
-  "name": "expensior",
-  "short_name": "expensior",
+  "name": "Expensior",
+  "short_name": "Expensior",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",
