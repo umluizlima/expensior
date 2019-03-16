@@ -1,7 +1,5 @@
 module.exports = {
-  publicPath: '/expensior/',
-
   pwa: {
-    name: 'Expensior'
-  }
-}
+    name: 'Expensior',
+  },
+};
