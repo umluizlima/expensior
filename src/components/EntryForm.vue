@@ -24,8 +24,10 @@
 
           <b-field label="Pile">
             <b-select v-model="form.pile" placeholder="Add entry to pile..." expanded required>
-              <option v-for="(pile, index) in availablePiles" :key="index">
-                  {{ pile }}
+              <option
+                v-for="(pile, index) in availablePiles"
+                :key="index">
+                  {{ pile.name }}
               </option>
             </b-select>
           </b-field>
@@ -50,13 +52,13 @@
 </template>
 
 <script>
-import { API } from '@/api';
+import { db } from '@/firebase';
 
 export default {
   data() {
     return {
-      api: new API('/entries'),
       form: {
+        createdAt: null,
         amount: null,
         description: null,
         date: new Date(),
@@ -79,31 +81,21 @@ export default {
       ],
     };
   },
-  created: function () {
-    var api = new API('/piles');
-    this.piles = [];
-    api.get()
-      .then((resp) => {
-        for (let pile of resp.data) {
-          this.availablePiles.push(pile.name);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
+  created() {
+    db.collection('piles').onSnapshot((querySnapshot) => {
+      this.availablePiles = [];
+      querySnapshot.forEach((doc) => {
+        this.availablePiles.push(doc.data());
       });
+    });
   },
   methods: {
     onSubmit(evt) {
       evt.preventDefault();
       /* Handle the submit event */
-      console.log(this.form);
-      this.api.create(this.form)
-        .then(() => {
-          this.$parent.close();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      this.form.createdAt = new Date();
+      db.collection('entries').add(this.form);
+      this.$parent.close();
     },
   },
 };

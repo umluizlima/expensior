@@ -18,13 +18,13 @@
 </template>
 
 <script>
-import { API } from '@/api';
+import { db } from '@/firebase';
 
 export default {
   data() {
     return {
-      api: new API('/piles'),
       form: {
+        createdAt: null,
         name: null,
       },
     };
@@ -33,14 +33,9 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
       /* Handle the submit event */
-      console.log(this.form);
-      this.api.create(this.form)
-        .then(() => {
-          this.$parent.close();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      this.form.createdAt = new Date();
+      db.collection('piles').add(this.form);
+      this.$parent.close();
     },
   },
 };
