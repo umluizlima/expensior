@@ -11,6 +11,7 @@
 
 <script>
 import Home from '@/views/Home.vue';
+import { store } from '@/firebase';
 
 export default {
   name: 'App',

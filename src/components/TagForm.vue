@@ -1,8 +1,8 @@
 <template>
-  <form id="pileForm" @submit="onSubmit">
+  <form id="tagForm" @submit="onSubmit">
     <div class="modal-card">
       <header class="modal-card-head">
-        <p class="modal-card-title">Create Pile</p>
+        <p class="modal-card-title">Create Tag</p>
       </header>
       <section class="modal-card-body">
         <b-field label="Name">
@@ -24,7 +24,6 @@ export default {
   data() {
     return {
       form: {
-        createdAt: null,
         name: null,
       },
     };
@@ -33,8 +32,8 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
       /* Handle the submit event */
-      store.addPile(this.form)
-        .then(() => alert("Pilha criada!"));
+      store.addTag(this.form)
+        .then(() => alert("Tag criada!"));
       this.$parent.close();
     },
   },
@@ -42,7 +41,7 @@ export default {
 </script>
 
 <style>
-  #pileForm {
+  #tagForm {
     width: 100%;
     display: flex;
     flex-direction: column;

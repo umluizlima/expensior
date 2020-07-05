@@ -25,8 +25,9 @@
           <b-field label="Pile">
             <b-select v-model="form.pile" placeholder="Add entry to pile..." expanded required>
               <option
-                v-for="(pile, index) in availablePiles"
-                :key="index">
+                v-for="pile in piles"
+                :value="pile.id"
+                :key="pile.id">
                   {{ pile.name }}
               </option>
             </b-select>
@@ -35,9 +36,11 @@
           <b-field label="Tags">
             <b-taginput
               v-model="form.tags"
-              :data="availableTags"
+              :data="tags"
+              field="name"
               autocomplete
-              :allow-new="true"
+              @typing="getFilteredTags"
+              :allow-new="false"
               icon="label"
               placeholder="Add a tag">
             </b-taginput>
@@ -52,50 +55,35 @@
 </template>
 
 <script>
-import { db } from '@/firebase';
+import { store } from '@/firebase';
 
 export default {
   data() {
     return {
       form: {
-        createdAt: null,
         amount: null,
         description: null,
         date: new Date(),
         pile: null,
         tags: [],
       },
-      /* Get piles from API */
-      availablePiles: [],
-      /* Get tags from API */
-      availableTags: [
-        'groceries',
-        'food',
-        'transportation',
-        'health',
-        'long term',
-        'short term',
-        'shelter',
-        'freelance',
-        'employment',
-      ],
+      piles: store.piles,
+      tags: store.tags,
     };
-  },
-  created() {
-    db.collection('piles').onSnapshot((querySnapshot) => {
-      this.availablePiles = [];
-      querySnapshot.forEach((doc) => {
-        this.availablePiles.push(doc.data());
-      });
-    });
   },
   methods: {
     onSubmit(evt) {
       evt.preventDefault();
       /* Handle the submit event */
-      this.form.createdAt = new Date();
-      db.collection('entries').add(this.form);
+      store.addEntry(this.form)
+        .then(() => alert("Registro criadd!"));
       this.$parent.close();
+    },
+    getFilteredTags(text) {
+      this.tags = store.tags.filter((tag) => {
+        return tag.name
+        .indexOf(text.toLowerCase()) >= 0
+      });
     },
   },
 };
